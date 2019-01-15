@@ -1,15 +1,15 @@
 // Configurables
 pack_size = 2;
-
+ 
 // Constants
 wall_thickness = 2;
-inner_radius = 9.25;
+inner_radius = 9.4;
 support_height = 12;
 track_width = 9;
 dimple_stool = 1;
 dimple_radius = 3;
 buckle = 4;
-gutter = .5;
+gutter = 0.5;
 double_gutter = gutter * 2;
 
 // Calculations
@@ -34,7 +34,7 @@ module base_plate() {
 
 module exterior_wall() {
   for(i=[0:pack_size-1]) {
-    xmove = (i*(outer_diameter)) -(i*.01) +outer_radius;
+    xmove = (i*(outer_diameter)) -(i*0.01) +outer_radius;
     translate([xmove,outer_radius,0]) cylinder(r=outer_radius, h= support_height + wall_thickness, $fn=100);
   }
 }
@@ -76,15 +76,15 @@ module nut_catch() {
     linear_extrude(height = support_height + wall_thickness) square(size = [outer_diameter/2, outer_diameter]);
 
    // Nut Catch 
-    translate([2,2,2]) linear_extrude(height = support_height + wall_thickness+gutter  ) square(size = [6 , outer_diameter - (wall_thickness*2)]);
+    translate([2,2,2]) linear_extrude(height = support_height + wall_thickness+gutter  ) square(size = [ outer_diameter/2 - wall_thickness*2, outer_diameter - (wall_thickness*2)]);
     
     // Screw Hole
-    translate([gutter+3,outer_radius,(support_height+wall_thickness -1.5)/2]) rotate([0,-90]) cylinder(r=1.5, h = wall_thickness*4 + double_gutter , $fn=100);
+    translate([gutter+3,outer_radius,(support_height+wall_thickness)/2 + 1]) rotate([0,-90]) cylinder(r=1.5, h = wall_thickness*4 + double_gutter , $fn=100);
     
     //Wiring Slot
     translate([wall_thickness ,track_centering*2,wall_thickness*2]) union() {
       
-        translate([0,0,-.001]) rotate([0,-90,180]) linear_extrude(height=outer_diameter + double_gutter)
+        translate([0,0,-0.001]) rotate([0,-90,180]) linear_extrude(height=outer_diameter + double_gutter)
           polygon(points=[[0,0],[track_width/2,track_width/2],[0,track_width]], paths=[[0,1,2]]);
       
        rotate([-180,0,0]) linear_extrude (height = wall_thickness) {
