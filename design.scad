@@ -4,10 +4,10 @@ pack_size = 12;
 // Constants
 wall_thickness = 2;
 inner_radius = 9.4;
-support_height = 12;
+support_height = 8;
 track_width = 9;
 dimple_stool = 1;
-dimple_radius = 3;
+dimple_radius = 2;
 buckle = 4;
 gutter = 0.5;
 double_gutter = gutter * 2;
@@ -17,25 +17,25 @@ outer_radius = 9.5 + (wall_thickness);
 outer_diameter = outer_radius * 2;
 inner_diameter = inner_radius * 2;
 track_centering = (outer_diameter + wall_thickness - track_width)/2;
-plate_height = wall_thickness * 2;
+plate_height = wall_thickness * 3;
 plate_size = (outer_diameter * pack_size) - pack_size;
 
 module base_plate() {
+  width = outer_radius + wall_thickness*2;
+  center = (outer_diameter - width)/2;
   linear_extrude (height = plate_height) {
-    difference() {
-      translate([0,1,0]) square(size = [plate_size, outer_diameter - wall_thickness]);
-       for(i=[1:pack_size-1]) {
-         translate([i*outer_diameter-buckle-i,0,0]) square(size = [buckle*2,buckle]);
-         translate([i*outer_diameter-buckle-i,outer_diameter-buckle,0]) square(size = [buckle*2,buckle]);
-      }
+      translate([0,center,0]) square(size = [plate_size, width]);
     }
-  }
+  /*
+  linear_extrude (height = plate_height) {
+      translate([0,outer_radius/2,0]) square(size = [plate_size, outer_radius]);
+    }*/
 }
 
 module exterior_wall() {
   for(i=[0:pack_size-1]) {
     xmove = (i*(outer_diameter)) +outer_radius - (1*i);
-    translate([xmove,outer_radius,0]) cylinder(r=outer_radius, h= support_height + wall_thickness, $fn=25);
+    translate([xmove,outer_radius,0]) cylinder(r=outer_radius, h= support_height + wall_thickness, $fn=50);
   }
 }
 
@@ -56,7 +56,7 @@ module wiring_slot() {
 module battery_well() {
   for(i=[0:pack_size-1]) {
     xmove = (i*(outer_diameter)) +outer_radius - (1*i);
-    translate([xmove,outer_radius,wall_thickness]) cylinder(r=inner_radius, h= support_height +1,$fn=25);
+    translate([xmove,outer_radius,wall_thickness]) cylinder(r=inner_radius, h= support_height +1,$fn=50);
   }
 }
 
@@ -65,8 +65,8 @@ module battery_dimple() {
         xmove = (i*(outer_diameter)) +outer_radius - (1*i);
         translate([xmove,outer_radius,0]) union() {
             stool = dimple_stool + wall_thickness;
-            linear_extrude (height = stool) circle(r = dimple_radius, $fn=25);
-            translate([0,0,stool])scale([dimple_radius,dimple_radius,2]) sphere(r = 1, $fn=25);
+            linear_extrude (height = stool) circle(r = dimple_radius,  $fn=50);
+            translate([0,0,stool])scale([dimple_radius,dimple_radius,2]) sphere(r = 1,  $fn=50);
         }
     }
 }
